@@ -1,0 +1,18 @@
+.header {
+  display: flex;
+  width: 100%;
+  padding: 12px 24px;
+  border-bottom: 1px solid #aaa;
+  flex-direction: column;
+  background-color: #f9f9f9;
+  gap: 12px;
+}
+.headerMain {
+  font-weight: 700;
+  font-style: italic;
+  font-size: 40px;
+}
+.headerDate {
+  font-style: italic;
+  font-size: 16px;
+}
