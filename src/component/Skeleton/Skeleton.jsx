@@ -2,8 +2,6 @@ import React from 'react';
 import styles from './styles.module.css';
 
 const Skeleton = ({ count = 1, type = 'banner' }) => {
-  console.log('Skeleton');
-
   return (
     <>
       {' '}
