@@ -1,34 +1,62 @@
 import React from 'react';
 import NewsBanner from '../../component/NewsBanner/NewsBanner';
-import { getNews } from '../../api/newsApi';
+import { getCategories, getNews } from '../../api/newsApi';
 import NewsList from '../../component/NewsList/NewsList';
 import Skeleton from '../../component/Skeleton/Skeleton';
 import styles from './styles.module.css';
 import Pagination from '../../component/Pagination/Pagination';
+import Categories from '../../component/Categories/Categories';
 
 const Main = () => {
   const [news, setNews] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
+
   const [currentPage, setCurrentPage] = React.useState(1);
+  const [categories, setCategories] = React.useState([]);
+  const [selectedCategory, setSelectedCategory] = React.useState('All');
   const totalPages = 10;
   const pageSize = 10;
 
   const fetchNews = async (currentPage) => {
     try {
       setIsLoading(true);
-      const response = await getNews(currentPage, pageSize);
+      const response = await getNews({
+        page_number: currentPage,
+        page_size: pageSize,
+        category: selectedCategory === 'All' ? null : selectedCategory,
+      });
       setNews(response.news);
-      console.log(response);
+      setError(null);
     } catch (error) {
       console.log(error);
+      setError(
+        'Error while loading data from ' +
+          import.meta.env.VITE_NEWS_BASE_API_URL +
+          '. ' +
+          error.message,
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
+  const fetchCategories = async () => {
+    try {
+      const response = await getCategories();
+      setCategories(['All', ...response.categories]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchCategories();
+  }, []);
+
   React.useEffect(() => {
     fetchNews(currentPage);
-  }, [currentPage]);
+  }, [currentPage, selectedCategory]);
 
   const handlePrevPage = () => {
     if (currentPage < totalPages) {
@@ -48,22 +76,33 @@ const Main = () => {
 
   return (
     <main className={styles.main}>
-      {news.length > 0 && !isLoading ? <NewsBanner newsItem={news[0]} /> : <Skeleton />}
-      <Pagination
-        handlePageNumber={handlePageNumber}
-        handlePrevPage={handlePrevPage}
-        handleNextPage={handleNextPage}
-        totalPages={totalPages}
-        currentPage={currentPage}
+      <Categories
+        categories={categories}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
       />
-      {!isLoading ? <NewsList news={news} /> : <Skeleton count={10} type="item" />}
-      <Pagination
-        handlePageNumber={handlePageNumber}
-        handlePrevPage={handlePrevPage}
-        handleNextPage={handleNextPage}
-        totalPages={totalPages}
-        currentPage={currentPage}
-      />
+      {error !== null ? (
+        <h3>{JSON.stringify(error)}</h3>
+      ) : (
+        <>
+          {news.length > 0 && !isLoading ? <NewsBanner newsItem={news[0]} /> : <Skeleton />}
+          <Pagination
+            handlePageNumber={handlePageNumber}
+            handlePrevPage={handlePrevPage}
+            handleNextPage={handleNextPage}
+            totalPages={totalPages}
+            currentPage={currentPage}
+          />
+          {!isLoading ? <NewsList news={news} /> : <Skeleton count={10} type="item" />}
+          <Pagination
+            handlePageNumber={handlePageNumber}
+            handlePrevPage={handlePrevPage}
+            handleNextPage={handleNextPage}
+            totalPages={totalPages}
+            currentPage={currentPage}
+          />
+        </>
+      )}
     </main>
   );
 };
