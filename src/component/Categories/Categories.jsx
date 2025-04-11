@@ -2,8 +2,6 @@ import React from 'react';
 import styles from './styles.module.css';
 
 const Categories = ({ categories, selectedCategory, setSelectedCategory }) => {
-  console.log(categories);
-
   return (
     <div className={styles.categories}>
       {categories.map((category) => (

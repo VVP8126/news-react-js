@@ -6,6 +6,8 @@ import Skeleton from '../../component/Skeleton/Skeleton';
 import styles from './styles.module.css';
 import Pagination from '../../component/Pagination/Pagination';
 import Categories from '../../component/Categories/Categories';
+import Search from '../../component/Search/Search';
+import { useDebounce } from '../../hooks/useDebounce';
 
 const Main = () => {
   const [news, setNews] = React.useState([]);
@@ -14,9 +16,12 @@ const Main = () => {
 
   const [currentPage, setCurrentPage] = React.useState(1);
   const [categories, setCategories] = React.useState([]);
+  const [keywords, setKeywords] = React.useState('');
+
   const [selectedCategory, setSelectedCategory] = React.useState('All');
   const totalPages = 10;
   const pageSize = 10;
+  const debounced = useDebounce(keywords, 2000);
 
   const fetchNews = async (currentPage) => {
     try {
@@ -25,6 +30,7 @@ const Main = () => {
         page_number: currentPage,
         page_size: pageSize,
         category: selectedCategory === 'All' ? null : selectedCategory,
+        keywords: debounced,
       });
       setNews(response.news);
       setError(null);
@@ -56,7 +62,7 @@ const Main = () => {
 
   React.useEffect(() => {
     fetchNews(currentPage);
-  }, [currentPage, selectedCategory]);
+  }, [currentPage, selectedCategory, debounced]);
 
   const handlePrevPage = () => {
     if (currentPage < totalPages) {
@@ -81,6 +87,7 @@ const Main = () => {
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
       />
+      <Search keywords={keywords} setKeywords={setKeywords} />
       {error !== null ? (
         <h3>{JSON.stringify(error)}</h3>
       ) : (
@@ -108,62 +115,15 @@ const Main = () => {
 };
 
 export default Main;
-
-/** 
- * setNews([
-          {
-            author: 'The Associated Press',
-            category: (2)[('television', 'entertainment')],
-            description:
-              "Jay North, who starred as the towheaded mischief maker on TV's Dennis the Menace for four seasons starting in 1959, has died. He was 73.(Image credit: Anonymous)...",
-            id: 'f913447a-4c7e-4f39-9213-a9cb261d29f6',
-            image:
-              'https://npr.brightspotcdn.com/dims3/default/strip/false/crop/3000x1688+0+281/resize/1400/quality/100/format/jpeg/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2Fc0%2F21%2F67e7d316472785b3d30ee3d21160%2Fap25096840438507.jpg',
-            language: 'en',
-            published: '2025-04-07 05:55:49 +0000',
-            title: "Jay North, TV's mischievous 'Dennis the Menace,' dies at 73",
-            url: 'https://www.npr.org/2025/04/07/nx-s1-5354697/jay-north-dennis-menace-dead',
-          },
-          {
-            author: 'Luke Broadwater',
-            category: ['politics'],
-            description:
-              'Before President Barack Obama was sworn into office in 2009, Benjamin Netanyahu called the Israeli diplomat Alon Pinkas out of the blue and asked for a lesson in what was essentially a foreign tongue:...',
-            id: 'd7130a81-1408-46d0-b326-e81e6ba14c28',
-            image:
-              'https://static01.nyt.com/images/2025/03/21/multimedia/00dc-netanyahu-trump-zfmj/00dc-netanyahu-trump-zfmj-facebookJumbo.jpg',
-            language: 'en',
-            published: '2025-04-07 04:01:06 +0000',
-            title: 'As Netanyahu Heads to Washington, Trump Is Already a Close Ally',
-            url: 'https://www.nytimes.com/2025/04/07/us/politics/netanyahu-trump-israel-gaza.html',
-          },
-          {
-            author: 'Frances Martel',
-            category: ['politics'],
-            description:
-              'Iranian Minister of Foreign Affairs Abbas Araghchi rejected the possibility of direct talks between Iran and the United States in the foreseeable future in remarks on Sunday — adding that, while Tehra...',
-            id: 'f8a8a155-99ea-488b-b90d-64891b379a38',
-            image:
-              'https://media.breitbart.com/media/2025/04/3-25-25-Iran-Foreign-Minister-Abbas-Araghchi-getty-640x335.jpg',
-            language: 'en',
-            published: '2025-04-07 03:58:11 +0000',
-            title: "Iran Insists Only on 'Indirect' Talks with U.S. -- Says None Have Happened Yet",
-            url: 'https://www.breitbart.com/middle-east/2025/04/06/iran-insists-indirect-talks-u-s-none-happened-yet/',
-          },
-          {
-            author: 'Fred Imbert',
-            category: ['investment'],
-            description:
-              'Traders work on the floor at the New York Stock Exchange in New York City, U.S., April 4, 2025. Brendan McDermid | Reuters\n\nWhen stock prices and stock futures fall rapidly in a single session, exchan...',
-            id: 'b9e9e97e-5de8-4355-b95b-239593a990c2',
-            image:
-              'https://image.cnbcfm.com/api/v1/image/108127050-17437996212025-04-04t204337z_1652419587_rc28rdaoj551_rtrmadp_0_usa-stocks.jpeg?v=1743799733&w=1920&h=1080',
-            language: 'en',
-            published: '2025-04-07 03:04:13 +0000',
-            title:
-              "How much do stocks have to drop before trading is halted? The details on market 'circuit breakers'",
-            url: 'https://www.cnbc.com/2025/04/06/sp-500-circuit-breaker-on-tariff-worries-what-that-means.html',
-          },
-        ]);
- * 
-*/
+/**
+ * { author: "Tyler Durden", category: ['business', 'finance'], description: "New UK Internet Policing Law Targets US Online Forums\nAuthored by Owen Evans via The Epoch Times,\nOnline forums based in the United States that rely on First Amendment protections are getting caught up in internet regulations in the UK, where they now risk being blocked under recent legislation.\n\nHa...", id: "4d17f747-4432-4a7a-b195-fbd1e1dededc", image: "None", language: "en", published: "2025-04-05 13:20:00 +0000", title: "New UK Internet Policing Law Targets US Online Forums", url: "https://www.zerohedge.com/political/new-uk-internet-policing-law-targets-us-online-forums" }
+ * { author: "SeekingAlpha.com", category: ['business', 'finance'], description: "Apple Inc. (NASDAQ: AAPL ) is a $3.4 trillion luxury gadget company, with one of the most well-known and desirable brands in the tech space and a phenomenal ecosystem of products. With its innovation-...", id: "f902b341-f093-4c81-9490-2e8aeda7dae6", image: "https://static.seekingalpha.com/cdn/s3/uploads/getty_images/1284113908/image_1284113908.jpg?io=getty-c-w1536", language: "en", published: "2025-04-05 08:43:19 +0000", title: "Apple's Downward Spiral: A Crisis It Can't Escape", url: "https://seekingalpha.com/article/4773161-apple-a-crisis-it-cant-escape?source=feed_all_articles" }
+ * { author: "Tyler Durden", category: ['business', 'finance'], description: "Your Discomfort Means It's Working\nSubmitted by QTR's Fringe Finance\nIt has been one whole day since President Trump implemented his tariff agenda.\nWith the amount of squirming and outright panic in the news media, markets, and on social media, you'd think we were 50 years into a 100-year bout of fa...", id: "31364030-f3cc-4827-a805-3ec63370f460", image: "None", language: "en", published: "2025-04-05 01:45:00 +0000", title: "Your Discomfort Means It's Working", url: "https://www.zerohedge.com/markets/your-discomfort-means-its-working" }
+ * { author: "Erika Beras", category: ['economy', 'business'], description: "Ever wondered why you can buy fresh Peruvian blueberries in the dead of winter? The answer, surprisingly, is tied to cocaine. Today on the show, we look at how the war on drugs led to an American trade policy and a foreign aid initiative that won us blueberries all year round. And for more on trade ...", id: "8d3ebccc-8059-4a72-83f0-ee472dc0d115", image: "None", language: "en", published: "2025-04-04 22:52:10 +0000", title: "How the War on Drugs got us... blueberries", url: "https://www.npr.org/2025/04/04/1242780124/blueberries-asparagus-cocaine-foreign-aid-usaid-war-on-drugs-peru-free-trade" }
+ * { author: "SeekingAlpha.com", category: ['business', 'finance'], description: "Oliver Rodzianko is an accomplished investment analyst grounded in timeless value principles, specializing in the technology sector with expertise in AI, semiconductors, software, and renewable energy...", id: "a40ad5f2-d9b5-47d9-8213-e2bd2213137c", image: "https://static.seekingalpha.com/cdn/s3/uploads/getty_images/2208191166/image_2208191166.jpg?io=getty-c-w1536", language: "de", published: "2025-04-04 20:31:11 +0000", title: "Trump's Liberation Day Tariffs Will Likely Change Apple Forever", url: "https://seekingalpha.com/article/4773102-trump-liberation-day-tariffs-likely-change-apple-forever?source=feed_all_articles" }
+ * { author: "Max Molter", category: ['business', 'finance'], description: "Markets crashed yesterday due to President Trump's tariff announcement . Apple Inc. ( NASDAQ:AAPL ) (TSX: AAPL:CA ) dropped by more than 9% on the same day, marking its worst day since the Corona Cras...", id: "4a509043-8453-4f3e-b9ab-d4366c521bc2", image: "https://static.seekingalpha.com/cdn/s3/uploads/getty_images/1767160835/image_1767160835.jpg?io=getty-c-w1536", language: "en", published: "2025-04-04 14:28:27 +0000", title: "Apple (AAPL) Just Had Its Worst Day Since 2020: The Stock Is Still Expensive", url: "https://seekingalpha.com/article/4773022-apple-just-had-its-worst-day-since-2020-stock-still-expensive?source=feed_all_articles" }
+ * { author: "Danil Sereda", category: ['business', 'finance'], description: "I've been covering Apple Inc. (NASDAQ: AAPL ) stock here on Seeking Alpha since December 2021, starting off with a \"Hold,\" then downgrading it to \"Sell,\" and eventually reverting back to \"Hold\" by mid...", id: "f0804de8-3794-42bb-a205-fa680f2cc575", image: "https://static.seekingalpha.com/cdn/s3/uploads/getty_images/91825529/image_91825529.jpg?io=getty-c-w1536", language: "en", published: "2025-04-04 13:52:12 +0000", title: "Apple's Heavy Dip Was Well Deserved (AAPL)", url: "https://seekingalpha.com/article/4773011-apple-aapl-stock-heavy-dip-was-well-deserved?source=feed_all_articles" }
+ * { author: "Wall Street Breakfast", category: ['business', 'finance'], description: "franckreporter\n\nListen below or on the go on Apple Podcasts and Spotify\n\nWall Street's gloom expected to persist (0:28), crude oil futures plunge (2:35) and Amazon rolls out new feature (4:15).\n\nTrans...", id: "71929d67-f564-4b3c-8326-b548cee828ee", image: "https://static.seekingalpha.com/cdn/s3/uploads/getty_images/1356756815/image_1356756815.jpg?io=getty-c-w1536", language: "en", published: "2025-04-04 11:07:00 +0000", title: "Wall Street Breakfast Podcast: Market Gloom Persists", url: "https://seekingalpha.com/article/4772988-wall-street-breakfast-podcast-market-gloom-persists?source=feed_tag_wall_st_breakfast" }
+ * { author: "Blue Chip Portfolios", category: ['business', 'finance', 'general'], description: "Apple has come under pressure amid fears of tariff impacts, which are likely to be less significant than market expectations. See why AAPL stock is a Buy.", id: "7043e302-56ca-4f55-8d4a-fd06f83a9001", image: "https://static.seekingalpha.com/cdn/s3/uploads/getty_images/458990823/image_458990823.jpg?io=getty-c-w1536", language: "en", published: "2025-04-04 05:23:41 +0000", title: "Apple: 6 Reasons To Consider Buying Amid Tariff Uncertainty", url: "https://seekingalpha.com/article/4772930-apple-stock-6-reasons-to-consider-buying-amid-tariff-uncertainty?source=feed" }
+ * { author: "Scott Rosenberg, Ina Fried", category: ['business'], description: "Apple's leaders, customers and fans are all holding their breath to see whether Trump's gigantic new tariffs will hamstring the iPhone maker. Why it …", id: "c828d0c9-2a00-457c-bf99-9d1ff9849c26", image: "None", language: "en", published: "2025-04-03 20:51:38 +0000", title: "Trump tariffs shake foundations of Apple's iPhone empire", url: "https://www.axios.com/2025/04/03/trump-tariffs-apple-iphone" }
+ */

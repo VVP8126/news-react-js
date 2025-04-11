@@ -17,11 +17,13 @@
   border: none;
   border-radius: 28px;
   background-color: #f2f2f2;
+  cursor: pointer;
 }
 
 .active {
   background-color: #e2e2e2;
   color: #656565;
+  cursor: default;
 }
 
 ::-webkit-scrollbar {
