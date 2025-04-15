@@ -1,12 +1,34 @@
 import React from 'react';
-import Pagination from '../Pagination/Pagination';
 import NewsList from '../NewsList/NewsList';
-import { TOTAL_PAGES } from '../../constants/constants';
+import { PAGE_SIZE, TOTAL_PAGES } from '../../constants/constants';
+import NewsFilters from '../NewsFilters/NewsFilters';
+import { useFilters } from '../../hooks/useFilters';
+import { useDebounce } from '../../hooks/useDebounce';
+import { useFetch } from '../../hooks/useFetch';
+// import { getNews } from '../../api/newsApi';
+import { getArticles } from '../../api/newsApi';
 
 import styles from './styles.module.css';
-import NewsFilters from '../NewsFilters/NewsFilters';
+import PaginationWrapper from '../PaginationWrapper/PaginationWrapper';
 
-const NewsByFilters = ({ filters, changeFilter, error, isLoading, news }) => {
+const NewsByFilters = () => {
+  const { filters, changeFilter } = useFilters({
+    page_number: 1,
+    page_size: PAGE_SIZE,
+    category: null,
+    keywords: '',
+  });
+
+  const debounced = useDebounce(filters.keywords, 2000);
+
+  // getNews // getArticles
+  const { data, isLoading, error } = useFetch(getArticles, {
+    ...filters,
+    keywords: debounced,
+  });
+
+  console.log(data.news);
+
   const handlePrevPage = () => {
     if (filters.page_number < TOTAL_PAGES) {
       changeFilter('page_number', filters.page_number - 1);
@@ -29,25 +51,17 @@ const NewsByFilters = ({ filters, changeFilter, error, isLoading, news }) => {
       {error !== null ? (
         <h3>{JSON.stringify(error)}</h3>
       ) : (
-        <>
-          <Pagination
-            handlePageNumber={handlePageNumber}
-            handlePrevPage={handlePrevPage}
-            handleNextPage={handleNextPage}
-            totalPages={TOTAL_PAGES}
-            currentPage={filters.page_number}
-          />
-
-          <NewsList isLoading={isLoading} news={news} />
-
-          <Pagination
-            handlePageNumber={handlePageNumber}
-            handlePrevPage={handlePrevPage}
-            handleNextPage={handleNextPage}
-            totalPages={TOTAL_PAGES}
-            currentPage={filters.page_number}
-          />
-        </>
+        <PaginationWrapper
+          top
+          bottom
+          handlePageNumber={handlePageNumber}
+          handlePrevPage={handlePrevPage}
+          handleNextPage={handleNextPage}
+          totalPages={TOTAL_PAGES}
+          currentPage={filters.page_number}
+        >
+          <NewsList isLoading={isLoading} news={data?.news} />
+        </PaginationWrapper>
       )}
     </section>
   );
