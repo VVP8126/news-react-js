@@ -1,8 +1,18 @@
 import React from 'react';
 import styles from './styles.module.css';
+import NewsBanner from '../NewsBanner/NewsBanner';
+import withSkeleton from '../../hocs/withSkeleton';
 
-const BannerList = () => {
-  return <div className={styles.banners}>1</div>;
+const BannerList = ({ banners }) => {
+  return (
+    <ul className={styles.banners}>
+      {banners?.map((banner) => {
+        return <NewsBanner key={banner?.id} newsItem={banner} />;
+      })}
+    </ul>
+  );
 };
 
-export default BannerList;
+const BannerListWithSkeleton = withSkeleton(BannerList, 'banner', 6, 'row');
+
+export default BannerListWithSkeleton;

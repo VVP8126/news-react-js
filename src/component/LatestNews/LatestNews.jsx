@@ -1,8 +1,13 @@
 import React from 'react';
 import styles from './styles.module.css';
+import BannerList from '../BannerList/BannerList';
 
-const LatestNews = () => {
-  return <section className={styles.section}></section>;
+const LatestNews = ({ banners, isLoading }) => {
+  return (
+    <section className={styles.section}>
+      <BannerList banners={banners} isLoading={isLoading} />
+    </section>
+  );
 };
 
 export default LatestNews;
