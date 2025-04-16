@@ -7,8 +7,6 @@ import { getLatestNews } from '../../api/newsApi';
 const LatestNews = () => {
   const { data, isLoading } = useFetch(getLatestNews);
 
-  console.log(data);
-
   return (
     <section className={styles.section}>
       <BannerList banners={data && data?.news} isLoading={isLoading} />
