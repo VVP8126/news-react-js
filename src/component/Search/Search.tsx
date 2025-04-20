@@ -1,8 +1,14 @@
 import React from 'react';
+
 import styles from './styles.module.css';
 
-const Search = ({ keywords, setKeywords }) => {
-  const handleChange = (e) => {
+interface Props {
+  keywords: string;
+  setKeywords: (keywords: string) => void;
+}
+
+const Search = ({ keywords, setKeywords }: Props) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeywords(e.target.value);
   };
   return (

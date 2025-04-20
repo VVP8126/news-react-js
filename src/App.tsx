@@ -1,6 +1,5 @@
-import React from 'react';
-import Header from './component/Header/Header';
-import Main from './pages/Main/Main';
+import Header from './component/Header/Header.tsx';
+import Main from './pages/Main/Main.tsx';
 
 function App() {
   return (

@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from './styles.module.css';
 import LatestNews from '../../component/LatestNews/LatestNews';
 import NewsByFilters from '../../component/NewsByFilters/NewsByFilters';

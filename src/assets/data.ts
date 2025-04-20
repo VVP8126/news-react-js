@@ -1,4 +1,8 @@
-export const articles = {
+import { NewsApiResponse } from '../interfaces';
+
+export const articles: NewsApiResponse = {
+  page: 1,
+  status: 'OK',
   news: [
     {
       author: 'SeekingAlpha.com',
