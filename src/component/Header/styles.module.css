@@ -1,10 +1,22 @@
 .header {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
-  padding: 12px 24px;
+  padding: 12px 0;
   border-bottom: 1px solid #aaa;
-  flex-direction: column;
   background-color: #f9f9f9;
+}
+.header img {
+  margin-right: 10px;
+  cursor: pointer;
+  background-color: white;
+  border-radius: 50%;
+}
+.info {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
   gap: 12px;
 }
 .headerMain {
@@ -15,4 +27,12 @@
 .headerDate {
   font-style: italic;
   font-size: 16px;
+}
+.dark {
+  background-color: #22272f;
+  border-bottom: 1px solid rgb(60, 60, 60);
+}
+
+.light {
+  background-color: white;
 }

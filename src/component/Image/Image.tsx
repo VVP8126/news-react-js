@@ -1,5 +1,7 @@
 import styles from './styles.module.css';
 
+import { stubs } from '../../assets/imgStub';
+
 interface Props {
   image: string;
 }
@@ -7,10 +9,10 @@ interface Props {
 const Image = ({ image }: Props) => {
   return (
     <div className={styles.imageBox}>
-      {image ? (
+      {image && image !== 'None' ? (
         <img className={styles.image} src={image} alt="IMG" />
       ) : (
-        <div className={styles.imageLbl}>NEWS</div>
+        <img className={styles.image} src={stubs.imgStub} alt="IMG" />
       )}
     </div>
   );
