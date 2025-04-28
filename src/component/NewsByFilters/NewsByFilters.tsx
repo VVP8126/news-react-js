@@ -1,56 +1,46 @@
 import NewsList from '../NewsList/NewsList.tsx';
 import NewsFilters from '../NewsFilters/NewsFilters.tsx';
 import PaginationWrapper from '../PaginationWrapper/PaginationWrapper.tsx';
-import { useFilters } from '../../hooks/useFilters.ts';
 import { useDebounce } from '../../hooks/useDebounce.ts';
-import { useFetch } from '../../hooks/useFetch.ts';
-import { PAGE_SIZE, TOTAL_PAGES } from '../../constants/constants';
-import { NewsApiResponse, ParamsType } from '../../interfaces';
-import { getNews } from '../../api/newsApi';
-// import { getArticles } from '../../api/newsApi';
-
+import { TOTAL_PAGES } from '../../constants/constants';
 import styles from './styles.module.css';
+import { useGetNewsByParamsQuery } from '../../store/services/newsApi.ts';
+import { useAppDispatch, useAppSelector } from '../../store/index.ts';
+import { setFilters } from '../../store/slices/newsSlice.ts';
 
 const NewsByFilters = () => {
-  const { filters, changeFilter } = useFilters({
-    page_number: 1,
-    page_size: PAGE_SIZE,
-    category: null,
-    keywords: '',
-  });
+  const filters = useAppSelector((state) => state.news.filters);
+  const dispatch = useAppDispatch();
 
   const debounced = useDebounce(filters.keywords, 2000);
 
-  // getNews // getArticles - use for tests only
-  const { data, isLoading, error } = useFetch<NewsApiResponse, ParamsType>(getNews, {
+  const { data, isLoading, error } = useGetNewsByParamsQuery({
     ...filters,
     keywords: debounced,
   });
 
-  console.log(data?.news);
-
   const handlePrevPage = () => {
     if (filters.page_number < TOTAL_PAGES) {
-      changeFilter('page_number', filters.page_number - 1);
+      dispatch(setFilters({ key: 'page_number', value: filters.page_number - 1 }));
     }
   };
 
   const handleNextPage = () => {
     if (filters.page_number > 1) {
-      changeFilter('page_number', filters.page_number + 1);
+      dispatch(setFilters({ key: 'page_number', value: filters.page_number + 1 }));
     }
   };
 
   const handlePageNumber = (pageNumber: number) => {
-    changeFilter('page_number', pageNumber);
+    dispatch(setFilters({ key: 'page_number', value: pageNumber }));
   };
 
   return (
     <section className={styles.section}>
-      <NewsFilters filters={filters} changeFilter={changeFilter} />
-      {error !== null ? (
-        <h3>{JSON.stringify(error)}</h3>
-      ) : (
+      <NewsFilters filters={filters} />
+      {error ? (
+        <p>Failed to load data</p>
+      ) : data ? (
         <PaginationWrapper
           top
           bottom
@@ -62,7 +52,7 @@ const NewsByFilters = () => {
         >
           <NewsList isLoading={isLoading} news={data?.news} />
         </PaginationWrapper>
-      )}
+      ) : null}
     </section>
   );
 };
