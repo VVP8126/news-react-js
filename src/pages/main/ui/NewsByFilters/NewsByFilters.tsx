@@ -1,58 +1,28 @@
-import { NewsList } from '../../../../widgets/news/ui/index.ts';
-import NewsFilters from '../NewsFilters/NewsFilters.tsx';
 import { useDebounce } from '../../../../shared/hooks/useDebounce.ts';
-import { TOTAL_PAGES } from '../../../../shared/constants/constants.ts';
-import { useAppDispatch, useAppSelector } from '../../../../app/appStore.tsx';
+import { useAppSelector } from '../../../../app/appStore.tsx';
 import { useGetNewsByParamsQuery } from '../../../../entities/news/api/newsApi.ts';
-import { setFilters } from '../../../../entities/news/model/newsSlice.ts';
-import Pagination from '../../../../feature/pagination/ui/Pagination/Pagination.tsx';
+import { NewsFilters } from '../../../../widgets/news/index.ts';
+import { useGetCategoriesQuery } from '../../../../entities/category/api/categoriesApi.ts';
 import styles from './styles.module.css';
+import NewsListWithPagination from '../NewsListWithPagination/NewsListWithPagination.tsx';
 
 const NewsByFilters = () => {
   const filters = useAppSelector((state) => state.news.filters);
-  const dispatch = useAppDispatch();
+  const news = useAppSelector((state) => state.news.news);
 
   const debounced = useDebounce(filters.keywords, 2000);
 
-  const { data, isLoading, error } = useGetNewsByParamsQuery({
+  const { isLoading } = useGetNewsByParamsQuery({
     ...filters,
     keywords: debounced,
   });
 
-  const handlePrevPage = () => {
-    if (filters.page_number < TOTAL_PAGES) {
-      dispatch(setFilters({ key: 'page_number', value: filters.page_number - 1 }));
-    }
-  };
-
-  const handleNextPage = () => {
-    if (filters.page_number > 1) {
-      dispatch(setFilters({ key: 'page_number', value: filters.page_number + 1 }));
-    }
-  };
-
-  const handlePageNumber = (pageNumber: number) => {
-    dispatch(setFilters({ key: 'page_number', value: pageNumber }));
-  };
+  const { data } = useGetCategoriesQuery(null);
 
   return (
     <section className={styles.section}>
-      <NewsFilters filters={filters} />
-      {error ? (
-        <p>Failed to load data</p>
-      ) : data ? (
-        <Pagination
-          top
-          bottom
-          handlePageNumber={handlePageNumber}
-          handlePrevPage={handlePrevPage}
-          handleNextPage={handleNextPage}
-          totalPages={TOTAL_PAGES}
-          currentPage={filters.page_number}
-        >
-          <NewsList isLoading={isLoading} news={data?.news} />
-        </Pagination>
-      ) : null}
+      <NewsFilters categories={data?.categories || []} filters={filters} />
+      <NewsListWithPagination isLoading={isLoading} news={news} filters={filters} />
     </section>
   );
 };

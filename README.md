@@ -1,6 +1,6 @@
-# React + Vite
+# FSD approach used:
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+https://feature-sliced.github.io/documentation/ru/docs/get-started/overview
 
 Currently, two official plugins are available:
 

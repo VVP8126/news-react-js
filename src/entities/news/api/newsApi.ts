@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ParamsType } from '../../../shared/interfaces';
 import { NewsApiResponse } from '..';
+import { loadNews } from '../model/newsSlice';
 
 const BASE_URL = import.meta.env.VITE_NEWS_BASE_API_URL;
 const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
@@ -24,13 +25,12 @@ export const newsApi = createApi({
           },
         };
       },
-      /**  // Set data in a store
+      /**  // Set data in a store */
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         const result = await queryFulfilled;
         const data = result.data;
         dispatch(loadNews(data.news));
       },
-      */
     }),
     getLatestNews: builder.query<NewsApiResponse, null>({
       query: () => {

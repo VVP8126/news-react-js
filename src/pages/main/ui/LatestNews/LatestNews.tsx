@@ -1,5 +1,6 @@
 import { useGetLatestNewsQuery } from '../../../../entities/news/api/newsApi.ts';
-import { BannerList } from '../../../../widgets/news/ui/index.ts';
+import { NewsList } from '../../../../widgets/news/index.ts';
+
 import styles from './styles.module.css';
 
 const LatestNews = () => {
@@ -7,7 +8,7 @@ const LatestNews = () => {
 
   return (
     <section className={styles.section}>
-      <BannerList banners={data && data?.news} isLoading={isLoading} />
+      <NewsList news={data && data?.news} direction="row" type="banner" isLoading={isLoading} />
     </section>
   );
 };
