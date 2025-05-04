@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import { useTheme } from '../../../../app/providers/ThemeProvider.tsx';
 import { ThemeButton } from '../../../../feature/theme/index.ts';
 import { formatDate } from '../../../../shared/utils/formatDate.ts';
@@ -8,7 +9,9 @@ const Header = () => {
   return (
     <header className={`${styles.header} ${isDark ? styles.dark : styles.light}`}>
       <div className={styles.info}>
-        <h1 className={styles.headerMain}>VP News</h1>
+        <Link to={'/'}>
+          <h1 className={styles.headerMain}>VP News</h1>
+        </Link>
         <p className={styles.headerDate}>{formatDate(new Date())}</p>
       </div>
       <ThemeButton />

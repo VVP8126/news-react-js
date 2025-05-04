@@ -4,7 +4,7 @@ import { useGetNewsByParamsQuery } from '../../../../entities/news/api/newsApi.t
 import { NewsFilters } from '../../../../widgets/news/index.ts';
 import { useGetCategoriesQuery } from '../../../../entities/category/api/categoriesApi.ts';
 import styles from './styles.module.css';
-import NewsListWithPagination from '../NewsListWithPagination/NewsListWithPagination.tsx';
+import PaginatingList from '../PaginatingList/PaginatingList.tsx';
 
 const NewsByFilters = () => {
   const filters = useAppSelector((state) => state.news.filters);
@@ -22,7 +22,7 @@ const NewsByFilters = () => {
   return (
     <section className={styles.section}>
       <NewsFilters categories={data?.categories || []} filters={filters} />
-      <NewsListWithPagination isLoading={isLoading} news={news} filters={filters} />
+      <PaginatingList filters={filters} news={news} isLoading={isLoading} />
     </section>
   );
 };

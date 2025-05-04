@@ -1,0 +1,31 @@
+.language {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: x-small;
+  font-weight: 400;
+}
+.published {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: small;
+  font-style: italic;
+}
+.itemCategories {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+.itemCategories span {
+  text-transform: capitalize;
+  background-color: #222;
+  color: white;
+  border-radius: 8px;
+  padding: 4px;
+}
+.description {
+  text-align: justify;
+}

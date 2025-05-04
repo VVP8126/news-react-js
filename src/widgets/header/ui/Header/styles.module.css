@@ -19,6 +19,9 @@
   margin-left: 10px;
   gap: 12px;
 }
+.info a {
+  text-decoration: none;
+}
 .headerMain {
   font-weight: 700;
   font-style: italic;

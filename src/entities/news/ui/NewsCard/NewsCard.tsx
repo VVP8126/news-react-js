@@ -4,13 +4,15 @@ import stub from '../../../../shared/assets/news/newsStub.svg';
 
 import styles from './styles.module.css';
 import Image from '../../../../shared/ui/Image/Image.tsx';
+import { ReactNode } from 'react';
 
 interface Props {
   item: INEWS;
   type: 'banner' | 'item';
+  viewNewsSlot?: (news: INEWS) => ReactNode;
 }
 
-const NewsCard = ({ item, type = 'item' }: Props) => {
+const NewsCard = ({ item, type = 'item', viewNewsSlot }: Props) => {
   return (
     <li className={`${styles.card} ${type === 'banner' && styles.banner}`}>
       {type === 'banner' ? (
@@ -31,6 +33,7 @@ const NewsCard = ({ item, type = 'item' }: Props) => {
           {formatTimeAgo(item.published)} by {item.author}
         </p>
       </div>
+      {viewNewsSlot ? viewNewsSlot(item) : null}
     </li>
   );
 };

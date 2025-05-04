@@ -1,11 +1,11 @@
-import { useDebounce } from '../../../../shared/hooks/useDebounce.ts';
-import { TOTAL_PAGES } from '../../../../shared/constants/constants.ts';
-import { useGetNewsByParamsQuery } from '../../../../entities/news/api/newsApi.ts';
-import Pagination from '../../../../feature/pagination/ui/Pagination/Pagination.tsx';
-import { NewsList } from '../../../../widgets/news/index.ts';
-import { IFilters } from '../../../../shared/interfaces/index.ts';
-import { INEWS } from '../../../../entities/news/index.ts';
-import { usePaginationNews } from '../../hooks/usePaginationNews.ts';
+import { INEWS } from '../../../../entities/news';
+import { useGetNewsByParamsQuery } from '../../../../entities/news/api/newsApi';
+import Pagination from '../../../../feature/pagination/ui/Pagination/Pagination';
+import { TOTAL_PAGES } from '../../../../shared/constants/constants';
+import { useDebounce } from '../../../../shared/hooks/useDebounce';
+import { IFilters } from '../../../../shared/interfaces';
+import { NewsList } from '../../../../widgets/news';
+import { usePaginationNews } from '../../hooks/usePaginationNews';
 
 interface Props {
   filters: IFilters;
@@ -13,7 +13,7 @@ interface Props {
   isLoading: boolean;
 }
 
-const NewsListWithPagination = ({ filters, news, isLoading }: Props) => {
+const PaginatingList = ({ filters, news, isLoading }: Props) => {
   const debounced = useDebounce(filters.keywords, 2000);
   const { handlePrevPage, handleNextPage, handlePageNumber } = usePaginationNews(filters);
 
@@ -43,4 +43,4 @@ const NewsListWithPagination = ({ filters, news, isLoading }: Props) => {
   );
 };
 
-export default NewsListWithPagination;
+export default PaginatingList;
